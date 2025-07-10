@@ -1,0 +1,35 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  background-image: url("./assets/BackPrevio.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+img {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.logos {
+  margin-top: 4rem;
+}
+.logos img {
+  max-width: 200px;
+  /* max-width: 200px;
+        height: auto; */
+}
+
+.img-fecha {
+  max-width: 400px;
+}
