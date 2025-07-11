@@ -1,4 +1,111 @@
 <!DOCTYPE html>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const overlay = document.createElement("div");
+    overlay.id = "employee-overlay";
+    overlay.innerHTML = `
+            <div class="overlay-bg"></div>
+            <form id="employee-form" class="overlay-form">
+                <h2 class="mb-3 text-white">ID de empleado</h2>
+                <input
+                    type="text"
+                    id="employee-id"
+                    name="employee-id"
+                    maxlength="15"
+                    class="form-control mb-2"
+                    placeholder="Ingresa tu ID de empleado"
+                    autocomplete="off"
+                    required
+                />
+                <div id="error-msg" class="text-danger mb-2" style="display:none;"></div>
+                <button type="submit" class="btn btn-primary w-100" style="background:#3c3182;border:none;">Enviar</button>
+            </form>
+        `;
+    document.body.appendChild(overlay);
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+            #employee-overlay {
+                position: fixed;
+                z-index: 9999;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0,0,0,0.85);
+                transition: opacity 0.5s;
+            }
+            #employee-overlay .overlay-bg {
+                position: absolute;
+                inset: 0;
+                background: #000;
+                opacity: 0.85;
+            }
+            #employee-overlay .overlay-form {
+                position: relative;
+                z-index: 1;
+                background: rgba(30,30,30,0.95);
+                padding: 2rem 2.5rem 2rem 2.5rem;
+                border-radius: 1rem;
+                box-shadow: 0 0 32px #000a;
+                min-width: 320px;
+                max-width: 90vw;
+                animation: fadeIn 0.6s;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.96);}
+                to { opacity: 1; transform: scale(1);}
+            }
+            @keyframes curtainUp {
+                to { transform: translateY(-100vh);}
+            }
+        `;
+    document.head.appendChild(style);
+
+    // Form logic
+    const form = overlay.querySelector("#employee-form");
+    const input = overlay.querySelector("#employee-id");
+    const errorMsg = overlay.querySelector("#error-msg");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      errorMsg.style.display = "none";
+      const value = input.value.trim();
+      if (!value) {
+        errorMsg.textContent = "El ID no puede estar vacío.";
+        errorMsg.style.display = "block";
+        return;
+      }
+      if (value.length > 15) {
+        errorMsg.textContent = "Máximo 15 caracteres.";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      // Fade out form
+      form.style.transition = "opacity 0.5s";
+      form.style.opacity = "0";
+      setTimeout(() => {
+        form.style.display = "none";
+        // Send webhook (replace URL)
+        fetch("https://your-webhook-url.com", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ employeeId: value }),
+        }).catch(() => {});
+
+        // Curtain up animation
+        overlay.style.transition =
+          "transform 0.7s cubic-bezier(.77,0,.18,1), opacity 0.5s";
+        overlay.style.transform = "translateY(-100vh)";
+        overlay.style.opacity = "0";
+        setTimeout(() => {
+          overlay.remove();
+        }, 700);
+      }, 500);
+    });
+  });
+</script>
 <html lang="es-MX">
   <head>
     <meta charset="utf-8" />
